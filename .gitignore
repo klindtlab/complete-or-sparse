@@ -1,0 +1,12 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+.cache/
+
+# Generated traces, external datasets, and rebuilt figures.
+Data/*
+!Data/.gitkeep
+!Data/README.md

@@ -1,0 +1,166 @@
+{
+  "format_version": 1,
+  "name": "primary_assumption_ablation",
+  "common": {
+    "seeds": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "dgp_seed": 20260728,
+    "train_seed": 20260729,
+    "eval_seed": 20260730,
+    "n": 5,
+    "nh": 5,
+    "nr_clusters": 100,
+    "max_steps": 1000000,
+    "batch_size": 1000,
+    "eval_samples": 4096,
+    "log_every": 5000,
+    "checkpoint_every": 50000,
+    "learning_rate": 0.0003,
+    "n_mixing_layers": 4,
+    "mixing_search_steps": 25000,
+    "n_hidden_layers": 6,
+    "use_hidden_batch_norm": true,
+    "expon_entropy": 1.0,
+    "expon_scale": 0.1,
+    "cluster_fit_steps": 20000,
+    "deterministic": true
+  },
+  "conditions": [
+    {
+      "id": "baseline",
+      "family": "baseline",
+      "label": "Baseline",
+      "description": "Independent exponential nonnegative latents, constant class entropy, ReLU output, and AdamW weight decay 0.03."
+    },
+    {
+      "id": "entropy_sd_0p5",
+      "family": "entropy",
+      "label": "Entropy SD 0.5",
+      "description": "Class-dependent conditional entropy with across-class SD 0.5 nat and a bias-free readout.",
+      "entropy_sd": 0.5
+    },
+    {
+      "id": "entropy_sd_1",
+      "family": "entropy",
+      "label": "Entropy SD 1",
+      "description": "Class-dependent conditional entropy with across-class SD 1 nat and a bias-free readout.",
+      "entropy_sd": 1.0
+    },
+    {
+      "id": "entropy_sd_2",
+      "family": "entropy",
+      "label": "Entropy SD 2",
+      "description": "Class-dependent conditional entropy with across-class SD 2 nats and a bias-free readout.",
+      "entropy_sd": 2.0
+    },
+    {
+      "id": "entropy_affine_sd_0",
+      "family": "entropy",
+      "label": "Affine, entropy SD 0",
+      "description": "Constant-entropy control with a readout bias, testing whether the affine head changes the baseline.",
+      "readout_bias": true
+    },
+    {
+      "id": "entropy_affine_sd_1",
+      "family": "entropy",
+      "label": "Affine, entropy SD 1",
+      "description": "Class-dependent entropy SD 1 nat with the theoretically matched affine readout.",
+      "entropy_sd": 1.0,
+      "readout_bias": true
+    },
+    {
+      "id": "entropy_affine_sd_2",
+      "family": "entropy",
+      "label": "Affine, entropy SD 2",
+      "description": "Class-dependent entropy SD 2 nats with the theoretically matched affine readout.",
+      "entropy_sd": 2.0,
+      "readout_bias": true
+    },
+    {
+      "id": "dependence_rho_0p1",
+      "family": "dependence",
+      "label": "Copula rho 0.1",
+      "description": "Weak conditional dependence from an equicorrelated Gaussian copula with unchanged exponential marginals.",
+      "dependence_rho": 0.1
+    },
+    {
+      "id": "dependence_rho_0p3",
+      "family": "dependence",
+      "label": "Copula rho 0.3",
+      "description": "Moderate conditional dependence from an equicorrelated Gaussian copula with unchanged exponential marginals.",
+      "dependence_rho": 0.3
+    },
+    {
+      "id": "dependence_rho_0p5",
+      "family": "dependence",
+      "label": "Copula rho 0.5",
+      "description": "Strong conditional dependence from an equicorrelated Gaussian copula with unchanged exponential marginals.",
+      "dependence_rho": 0.5
+    },
+    {
+      "id": "gamma_shape_2",
+      "family": "distribution",
+      "label": "Gamma k=2",
+      "description": "Non-exponential nonnegative Gamma conditionals with common shape 2 and class means matched to baseline.",
+      "distribution": "gamma",
+      "shape": 2.0
+    },
+    {
+      "id": "weibull_shape_1p5",
+      "family": "distribution",
+      "label": "Weibull k=1.5",
+      "description": "Non-exponential nonnegative Weibull conditionals with shape 1.5 and class means matched to baseline.",
+      "distribution": "weibull",
+      "shape": 1.5
+    },
+    {
+      "id": "lognormal_matched",
+      "family": "distribution",
+      "label": "Log-normal",
+      "description": "Nonnegative log-normal conditionals matched to both the class-specific exponential means and variances.",
+      "distribution": "lognormal"
+    },
+    {
+      "id": "signed_prob_0p1",
+      "family": "latent_nonnegativity",
+      "label": "Sign flips 0.1",
+      "description": "Boundary test in which each exponential latent coordinate is independently sign-flipped with probability 0.1.",
+      "sign_flip_prob": 0.1
+    },
+    {
+      "id": "signed_prob_0p5",
+      "family": "latent_nonnegativity",
+      "label": "Sign flips 0.5",
+      "description": "Fully symmetric signed-latent boundary test with independent sign-flip probability 0.5.",
+      "sign_flip_prob": 0.5
+    },
+    {
+      "id": "activation_leaky_0p1",
+      "family": "activation_nonnegativity",
+      "label": "LeakyReLU 0.1",
+      "description": "Activation-boundary test allowing negative outputs with LeakyReLU slope 0.1.",
+      "output_activation": "leaky_relu",
+      "negative_slope": 0.1
+    },
+    {
+      "id": "activation_linear",
+      "family": "activation_nonnegativity",
+      "label": "Linear",
+      "description": "Activation-boundary test removing the nonnegative output constraint entirely.",
+      "output_activation": "linear"
+    },
+    {
+      "id": "energy_wd_0",
+      "family": "energy",
+      "label": "Weight decay 0",
+      "description": "Energy-regularizer removal with all other baseline settings fixed.",
+      "weight_decay": 0.0
+    },
+    {
+      "id": "energy_wd_0p01",
+      "family": "energy",
+      "label": "Weight decay 0.01",
+      "description": "Intermediate energy-regularizer strength between removal and the 0.03 baseline.",
+      "weight_decay": 0.01
+    }
+  ]
+}
